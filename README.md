@@ -2,51 +2,59 @@
 
 ## Overview
 
-This Python SDK is applied to Python 2.X and 3.X.
+This Python SDK is applied to Python 2.X. For Python 3.X, please go to [wcs-python3-sdk](https://github.com/CDNetworks-Object-Storage/wcs-python3-sdk). 
 
-The functions of this SDK, including
+***Note: wcs-python-sdk can be also used as a Command Line Tool.***
 
-- Object Uploading
+To use as a SDK, you can
+
+- Upload
 - Resource Management
 - Advanced Resource Management
 - Persistent Processing
 - Query for Operation Status
-- Query for Recording Files of Live
+- Query for Live Recording Files
 
-The functions of Command Line Tool, including
+To use as a Command Line Tool, you can 
 
-- Normal Upload
+- Upload
 - Multipart Upload
 - Resource Management
 - Delete Object by Prefix
 
 ## Install
 
-We recommend installing it using pip.
+Pip install recommended.
 
 - Install
 
 ```
 Python2：pip install wcs-python-sdk
-Python3：pip install wcs-python3-sdk
 ```
 
 - Upgrade
 
 ```
 Python2：pip install -U wcs-python-sdk
-Python3：pip install -U wcs-python3-sdk
 ```
 
 ## Initialize
 
-Before using the SDK, you need to obtain AccessKey and SecretKey for signature authorization.
+Before using the SDK, you need to obtain ***AccessKey*** and ***SecretKey*** for signature authorization.
 
-AK/SK can be obtained: 1, Apply for CDNetworks cloud storage service. 2, Log in to CDNetworks SI portal, and you can get the AccessKey and SecretKey in Security Console - AK/SK Management 3, Log in to SI portal and view the Upload Domain (puturl) and Manage Domain (mgrurl) in Bucket Overview -> Bucket Settings
+And then, you have to get these info: 
 
-After obtaining the above info, executing the following commands to initialize the configuration information: wcscmd --configure
+1. account: Apply for CDNetworks cloud storage service, get the account. 
 
-The updated configuration information will be saved in .wcscfg in the $ HOME directory. And you can print the configuration information added in the previous step by the following command: wcscmd --dump-config The configuration parameters in .wcscfg file are described as below:
+2. AK/SK: Log in to CDNetworks SI portal, and you can get the ***AccessKey*** and ***SecretKey*** in Security Console - AK/SK Management 
+
+3. puturl&mgrurl: Log in to SI portal and view the Upload Domain (puturl) and Manage Domain (mgrurl) in Bucket Overview -> Bucket Settings
+
+After obtaining the above info, executing ```wcscmd --configure``` to initialize.
+
+The updated config will be saved in ***.wcscfg*** file under***$HOME*** directory. And you can print the config added after initialization by command ```wcscmd --dump-config```
+
+The configuration parameters in ***.wcscfg*** file are:
 
 ```
 access_key  # Access key of user
@@ -83,7 +91,7 @@ tmp_record_folder  # upload progress record directory for multipart upload
 upload_id   # task id of breakpoint resume in multipart upload
 ```
 
-## Command Line Tool wcscmd
+## How to use as a Command Line Tool
 
 In Windows OS, you need to add “python” to execute command line, e.g.`Python wcscmd --help`
 
@@ -92,7 +100,7 @@ In Windows OS, you need to add “python” to execute command line, e.g.`Python
 ```
 wcscmd --help
 Commands:
-List objects  支持后面加参数 如--prefix aa
+List objects
 	wcscmd list wcs://BUCKET RESFILE
 List buckets
 	wcscmd listbucket
@@ -122,7 +130,7 @@ Get fmgr task results
 	wcscmd fmgrStatus  persistentId
 ```
 
-#### wcscmd Normal Upload
+#### wcscmd Upload
 
 The upload policy can be defined by editting .wcscfg, as well as have temporary configurations by the option in command line.
 
@@ -132,8 +140,8 @@ wcscmd put wcs://BCUKET/OBJECT localPath  --overwrite 1
 
 #### wcscmd Multipart Upload
 
-The upload policy can be defined by editting .wcscfg, as well as have temporary configurations by the option in command line.
-If breakpoint resume function is required, you need to add an option --upload-id, in this case, the priority of this upload-id is higher than upload-id in .wcscfg.
+The upload policy can be defined by editting ***.wcscfg***, as well as have temporary configurations by the `option` in command line.
+If breakpoint resume function is required, you need to add an option `--upload-id`, in this case, the priority of this upload-id is higher than upload-id in .wcscfg.
 
 ```
 wcscmd multiput wcs://BCUKET/OBJECT localPath --upload-id 3IL3ce3kR6kDf4sihxh0LcWUpzTYEKFf
@@ -147,7 +155,7 @@ wcscmd listbucket
 
 #### wcscmd List Object of a Bucket
 
-E.g. In the below example, the result of list will be saved in result of current directory.
+E.g. In the below example, the result of list will be saved in ***result*** file of current directory.
 
 ```
 wcscmd list wcs://BCUKET ./result --limit 4  --marker 2
@@ -155,7 +163,8 @@ wcscmd list wcs://BCUKET ./result --limit 4  --marker 2
 
 #### wcscmd Download an Object
 
-If there is no filename, the downloaded object will be the same name with the original one, and it will be saved in current directory. If there is a filename, the downloaded object will be saved in currently directory, and it will be with the filename you named it. The URL must be enclosed by quotes “url”.
+Use parameter `filename` to name the object you want to download if you want to rename it, or the name will be be kept same with that in object storage.
+Note: The URL must be enclosed by quotes “url”.
 
 ```
 wcscmd get [URL] [filename]
@@ -172,7 +181,9 @@ wcscmd stat wcs://BCUKET/OBJECT
 The unit of expiration is DAY.
 
 - 0 means delete it as soon as possible
-- -1 means cancel the expiration, and it will be stored permanently When setting, -1 must be enclosed by quotes.
+- -1 means cancel the expiration, and it will be stored permanently 
+
+Note: When setting, -1 must be enclosed by quotes.
 
 ```
 wcscmd setdeadline wcs://BCUKET/OBJECT 3
@@ -205,7 +216,7 @@ wcscmd cp wcs://SRCBUCKET/SRCOBJECT wcs://DSTBUCKET/DSTOBJECT
 
 ## Generate Etag
 
-wcs-python-sdk provides the tool to generate etag value, users can experience this function through command line.
+wcs-python-sdk provides the tool to generate etag value, you can have this through command line.
 
 ```
 /usr/bin/wcs_etag_cal -h
@@ -227,15 +238,15 @@ FrA377uGHSxcTM62-rjsjvoKqRVS FiUsqBkZ6e8KaAA9Uu6q3qLPgmDW
 
 
 
-Common Questions
+### Common Issues
 
 1、The error will occur when using this tool: `pkg_resources.DistributionNotFound: [modulename]`
 
 2、Solution for this error: `pip install --upgrade setuptools`
 
-## Python SDK
+## How to use as a Python SDK
 
-Initialization
+### Import and Initialize
 
 ```
 import os
@@ -244,16 +255,16 @@ from wcs.commons.config import Config
 from wcs.services.client import Client
 config_file = os.path.join(expanduser("~"), “.wcscfg”)
 
-cfg = Config(config_file) #加载配置文件
+cfg = Config(config_file) //Add config file
 
-cli = Client(cfg) 初始化Client
+cli = Client(cfg) //Initialize the client # Note:Clients should be create separately in different threads when uploading with multithreads.
 ```
 
 
 
-#### Normal Upload
+#### Upload
 
-The upload policy can be defined by editing .wcscfg
+The upload policy can be defined by ***.wcscfg*** file.
 
 ```
 key = ''
@@ -264,22 +275,35 @@ cli.simple_upload(filepath, bucket, key)
 
 #### Multipart Upload
 
-1、The upload policy can be defined by editing .wcscfg, as well as have temporary configurations by the option in command line.
-2、If breakpoint resume function is required, you need to add an option --upload-id, in this case, the priority of this upload-id is higher than upload-id in .wcscfg.
+1. The upload policy can be defined by ***.wcscfg*** file, as well as have temporary configurations by the option in command line.
+2. If breakpoint resume function is required, you need to add an option `--upload-id`, in this case, the priority of this `upload-id` is higher than upload-id in .wcscfg.
 
 ```
 key = ''
 bucket = ''
 filepath = ''
 upload_id = ''
-cli.multipart_upload(filepath, bucket, key，upload_id)
+cli.multipart_upload(filepath, bucket, key，upload_id)	//use connection resuming on break-point
+cli.multipart_upload(filepath, bucket, key)		//not to use connection resuming on break-point
 ```
 
-Besides, current upload record is in tmp_record_folder directory, it will generate directories named with upload id. And it will generate multiple objects in directory tmp_record_folder/upload id. Each object will be named with its offset, and it will record the upload result.
+Besides, current upload record is in tmp_record_folder directory, it will generate directories named with upload id. And it will generate multiple objects in directory ***tmp_record_folder/upload id***. Each object will be named with its offset, and it will record the upload result.
+
+#### Advanced Upload
+
+1. Advanced upload will help to choose upload or multipartupload automatically. Object larger than `multi_size` will be uploaded by multipart, otherwise, will be uploaded normally. Default `multi_size` is 20Mb.
+2. `upload id` is needed when using Connection resuming on break-point,the priority this `upload-id` is higher than `upload-id` in .wcscfg.
+```
+key = ''
+bucket = ''
+filepath = ''
+upload_id = ''
+cli.smart_upload(filepath, bucket, key, upload_id, multi_size=20)
+```
 
 #### Upload by Stream Address
 
-The upload policy can be defined by editing .wcscfg, and the stream address must be provided.
+The upload policy can be defined by ***.wcscfg*** file, and the stream address must be provided.
 
 ```
 key = ''
@@ -297,7 +321,7 @@ Notes: No need to do BASE64 encoding in the para prefix input.
 
 #### List Object
 
-There are four optional parameters (limit, mode, prefix, marker) can be input, and you can also define the related configuration item in .wcscfg.
+There are four optional parameters (limit, mode, prefix, marker). You can also set the parameters in ***.wcscfg*** file.
 
 ```
 cli.bucket_list(bucket,limit=10)
@@ -427,7 +451,7 @@ fops = 'bucket/%s/key/%s' % (enbucket, enkey)
 cli.m3u8_delete(fops)
 ```
 
-#### Inquire for Advanced Resource Management
+#### Query for Advanced Resource Management
 
 ```
 persistentId = ''
@@ -445,7 +469,7 @@ cli.ops_execute(fops,bucket,key)
 
 #### Query for Recording Files of Live
 
-Table 1 Request parameters:
+Request parameters:
 
 | Parameter   | Required | Description                                                  |
 | ----------- | -------- | ------------------------------------------------------------ |
@@ -453,3 +477,39 @@ Table 1 Request parameters:
 | startTime   | yes      | Specify the start time of Live, the fromat is YYYYMMDDmmhhss |
 | endTime     | yes      | Specify the end time of Live, the fromat is YYYYMMDDmmhhss   |
 | bucket      | yes      | Specify Bucket                                               |
+
+example
+
+```cli.wslive_list(channelname,startTime,startTime, bucket,start,limit)```
+
+## crc64 calculation
+There are three methods to calculate crc64 value of a file.
+### method 1
+Calculating with wcscmd
+```wcscmd crc64 ./test-1k```
+### method 2
+```
+from wcs.commons.util import file_crc64
+filepath = 'xxxx'
+crc64Value = file_crc64(filepath)
+
+from wcs.commons.util import file_crc64
+fileStream = 'xxxx' 
+crc64Value = file_crc64(fileStream,is_path=False)
+
+from wcs.commons.util import crc64
+crc64Value = crc64(stream)
+```
+### method 3
+```
+usage: WCS Python SDK [-h] {crc64} ...
+positional arguments:
+    {crc64}
+    crc64     crc64 [file...]
+optional arguments:
+    -h, --help  show this help message and exit
+
+/usr/bin/wcs_crc64_cal crc64 filepath1 filepath2
+[filepath1, filepath2]
+1798452899179748974 5299837023984967047
+```
