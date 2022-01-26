@@ -1,84 +1,94 @@
-# WCS Python SDK用户文档
-## [README of English](https://github.com/Wangsu-Cloud-Storage/wcs-python-sdk/blob/master/README-EN.md)
+# Python SDK for wcs
 
-## 概览
-wcs-python-sdk从v4.0.0版本开始，既可作为Python SDK使用，也可作为命令行工具使用
+## Overview
 
-* SDK的功能包括：文件上传、资源管理、高级资源管理、持久化处理、相应操作状态查询以及直播录制文件查询。
-* 命令行工具的功能包括：普通上传、分片上传、资源管理、按前缀删除文件
-* 此Python SDK适用于python 2.X，如需python 3.x版本请参考：[wcs-python3-sdk](https://github.com/Wangsu-Cloud-Storage/wcs-python3-sdk)
+This Python SDK is applied to Python 2.X and 3.X.
 
-## 安装
-推荐使用pip安装
+The functions of this SDK, including
 
-* 直接安装
+- Object Uploading
+- Resource Management
+- Advanced Resource Management
+- Persistent Processing
+- Query for Operation Status
+- Query for Recording Files of Live
+
+The functions of Command Line Tool, including
+
+- Normal Upload
+- Multipart Upload
+- Resource Management
+- Delete Object by Prefix
+
+## Install
+
+We recommend installing it using pip.
+
+- Install
+
 ```
-pip install wcs-python-sdk
-```
-
-* 更新方式
-```
-pip install -U wcs-python-sdk
-```
-
-## 初始化
-在使用SDK之前，您需要获得一对有效的AccessKey和SecretKey签名授权。
-
-可以通过如下方法获得：
-
-1. 开通网宿云存储账号
-2. 登录网宿SI平台，在安全管理-秘钥管理查看AccessKey和SecretKey
-3. 登录网宿SI平台，在安全管理-域名管理查看上传域名（puturl）和管理域名(mgrurl)。
-
-获取上面4个配置之后，执行如下命令，通过命令行交互的方式对配置信息进行初始化：
-wcscmd --configure
-
-更新的配置信息会保存在$HOME目录下的.wcscfg文件中，同时可以通过下面的命令打印上一步添加的配置信息：
-wcscmd --dump-config
-
-.wcscfg文件中的配置参数说明如下：
-```
-access_key  #用户ak
-block_size  #分片上传块大小，默认值4194304，配置时不需要带单位，默认单位为B
-bput_retries  #分片上传，bput请求重传次数
-bput_size  #分片上传块内片大小，默认值524288，配置时不需要带单位，默认单位为B
-callbackBody  #回调上传成功后，服务端提交到callbackurl的数据
-callbackUrl  #回调上传成功后，服务端以POST方式请求该地址
-concurrency  #分片上传的块并发度，当并发度设置为0时为顺序上传
-connection_retries  #请求建立连接时的重传次数
-connection_timeout  #请求建立连接的超时时间，单位为秒
-contentDetect  #文件上传成功后，进行内容鉴定操作
-detectNotifyRule  #鉴定结果通知规则设置
-detectNotifyURL  #接收鉴定结果的通知地址，要求必须是公网URL地址
-force  #强制执行数据处理，默认值为0，不强制执行数据处理并覆盖原结果
-ishttps  #是否使用https发起请求
-limit  #列举资源API的limit参数，配置列举条目
-marker #列举资源API的maker参数，配置上次列举返回的位置标记，作为本次列举的起点信息
-mgr_url  #用户的管理域名
-mkblk_retries  #分片上传，mkblk请求重传次数
-mkfile_retries   #分片上传，mkfile请求重传次数
-mode   #列举资源API的mode参数，配置列表排序方式
-notifyurl  #异步处理API处理结果通知接收URL
-output   #将任务处理结果的描述信息保存到指定文件，格式为：<bucket>:<key>。
-overwrite   #上传API发现文件已存在时是否覆盖
-persistentNotifyUrl   #接收预处理结果通知的地址
-persistentOps  #文件上传成功后，预处理指令列表
-prefix  #列举资源API的prefix参数
-put_url   #用户上传域名
-returnBody  #上传成功后，自定义最终返回給上传端的数据
-returnUrl  #上传成功后，服务端以POST方式请求该地址
-secret_key  #用户sk
-separate  #处理指令是否分开通知
-tmp_record_folder  #分片上传上传进度记录目录
-upload_id   #分片上传断点续传的任务id
+Python2：pip install wcs-python-sdk
+Python3：pip install wcs-python3-sdk
 ```
 
+- Upgrade
 
-## wcscmd命令行工具使用
+```
+Python2：pip install -U wcs-python-sdk
+Python3：pip install -U wcs-python3-sdk
+```
 
-Windows系统执行命令需要添加python再执行,如python wcscmd --help
+## Initialize
 
-#### 查阅工具使用说明
+Before using the SDK, you need to obtain AccessKey and SecretKey for signature authorization.
+
+AK/SK can be obtained: 1, Apply for CDNetworks cloud storage service. 2, Log in to CDNetworks SI portal, and you can get the AccessKey and SecretKey in Security Console - AK/SK Management 3, Log in to SI portal and view the Upload Domain (puturl) and Manage Domain (mgrurl) in Bucket Overview -> Bucket Settings
+
+After obtaining the above info, executing the following commands to initialize the configuration information: wcscmd --configure
+
+The updated configuration information will be saved in .wcscfg in the $ HOME directory. And you can print the configuration information added in the previous step by the following command: wcscmd --dump-config The configuration parameters in .wcscfg file are described as below:
+
+```
+access_key  # Access key of user
+block_size  # Block size in multipart upload, default is 4194304，unit is B
+bput_retries  #For multipart upload, the request retries of bput
+bput_size  # Chunk size in multipart upload, default is 524288, unit is B
+callbackBody  # when upload finished, the data to callbackurl
+callbackUrl  # when upload finished, POST request to this address
+concurrency  # Block concurrency, upload in order if this value is 0
+connection_retries  # number of retries when request connection
+connection_timeout  # Timeout when request connection
+contentDetect  #After uploading, detect content
+detectNotifyRule  # Rules of notification in content detection
+detectNotifyURL  # Address for receiving result, public network URL
+force  # If force to execute, default is 0 – not force
+ishttps  # If request in https
+limit  # this para is for List API, define the items listed
+marker # For List API, mark the point in last list as the start point
+mkblk_retries  # for multipart upload, retries number of mkblk
+mkfile_retries   # for multipart upload, retries number of mkfile
+mode   # For List API, define the sorting method of list
+notifyurl  # URL for receiving result in asynchronous processing
+output  #Save descriptor of task as specify file, format：<bucket>:<key>
+overwrite   # When upload, if overwrite if filename is existing
+persistentNotifyUrl   # Address to receive pre-processing result
+persistentOps  # After uploading, the pre-processing command
+prefix  # The para prefix when list resource
+put_url   # the upload domain of users
+returnBody  #The data return to upload end when uploading is done
+returnUrl #Storage will POST request to this address when uploading is done
+secret_key  # secret key of user
+separate  # If separately notify the processing commands?
+tmp_record_folder  # upload progress record directory for multipart upload
+upload_id   # task id of breakpoint resume in multipart upload
+```
+
+## Command Line Tool wcscmd
+
+In Windows OS, you need to add “python” to execute command line, e.g.`Python wcscmd --help`
+
+#### Command Help
+
 ```
 wcscmd --help
 Commands:
@@ -112,101 +122,139 @@ Get fmgr task results
 	wcscmd fmgrStatus  persistentId
 ```
 
-#### wcscmd[普通上传](https://wcs.chinanetcenter.com/document/API/FileUpload/Upload)
+#### wcscmd Normal Upload
 
-上传策略可以通过编辑.wcscfg文件中响应的配置项进行定义，也可以通过命令行的option进行临时配置,
-```
-wcscmd put wcs://BUCKET/OBJECT localPath  --overwrite 1
-```
+The upload policy can be defined by editting .wcscfg, as well as have temporary configurations by the option in command line.
 
-#### wcscmd[分片上传](https://wcs.chinanetcenter.com/document/API/FileUpload/SliceUpload)
-上传策略可以通过编辑.wcscfg文件中响应的配置项进行定义，也可以通过命令行的option进行临时配置，如果需要进行断点续传需要增加--upload-id这个option，这个upload-id的优先级高于在.wcscfg中配置的upload id
 ```
-wcscmd multiput wcs://BUCKET/OBJECT localPath --upload-id 3IL3ce3kR6kDf4sihxh0LcWUpzTYEKFf
+wcscmd put wcs://BCUKET/OBJECT localPath  --overwrite 1
 ```
 
-#### wcscmd[列举空间列表](https://wcs.chinanetcenter.com/document/API/ResourceManage/listbucket)
-```wcscmd listbucket```
+#### wcscmd Multipart Upload
 
-#### wcscmd[列举空间文件列表](https://wcs.chinanetcenter.com/document/API/ResourceManage/list)
-空间test的列举结果会保存在当前目录的result文件中
+The upload policy can be defined by editting .wcscfg, as well as have temporary configurations by the option in command line.
+If breakpoint resume function is required, you need to add an option --upload-id, in this case, the priority of this upload-id is higher than upload-id in .wcscfg.
+
 ```
-wcscmd list wcs://BUCKET ./result --limit 4  --marker 2
+wcscmd multiput wcs://BCUKET/OBJECT localPath --upload-id 3IL3ce3kR6kDf4sihxh0LcWUpzTYEKFf
 ```
 
-#### wcscmd下载文件
-未带filename 参数，下载的文件默认会与源文件同名，并保存在当前目录下
-带有filename 参数，下载文件保存在当前目录下，文件名称为参数filename
-url 需要用''引号包含起来
+#### wcscmd List Bucket
+
+```
+wcscmd listbucket
+```
+
+#### wcscmd List Object of a Bucket
+
+E.g. In the below example, the result of list will be saved in result of current directory.
+
+```
+wcscmd list wcs://BCUKET ./result --limit 4  --marker 2
+```
+
+#### wcscmd Download an Object
+
+If there is no filename, the downloaded object will be the same name with the original one, and it will be saved in current directory. If there is a filename, the downloaded object will be saved in currently directory, and it will be with the filename you named it. The URL must be enclosed by quotes “url”.
+
 ```
 wcscmd get [URL] [filename]
 ```
 
-#### wcscmd[获取文件信息](https://wcs.chinanetcenter.com/document/API/ResourceManage/stat)
-```wcscmd stat wcs://BUCKET/OBJECT```
+#### wcscmd Get the Info of Object
 
-#### wcscmd[设置文件保存期限](https://wcs.chinanetcenter.com/document/API/ResourceManage/setdeadline)
-保存时间单位为天，0表示尽快删除，-1表示取消过期时间，永久保存,要设置-1的时候，需要将整个包含在引号内
 ```
-wcscmd setdeadline wcs://BUCKET/OBJECT 3
-wcscmd setdeadline wcs://BUCKET/OBJECT '"-1"'
+wcscmd stat wcs://BCUKET/OBJECT
 ```
 
-#### wcscmd[删除文件](https://wcs.chinanetcenter.com/document/API/ResourceManage/delete)
-```wcscmd del wcs://BUCKET/OBJECT```
+#### wcscmd Set the Expiration of Object
 
-#### wcscmd[按前缀删除文件](https://wcs.chinanetcenter.com/document/API/Fmgr/deletePrefix)
+The unit of expiration is DAY.
+
+- 0 means delete it as soon as possible
+- -1 means cancel the expiration, and it will be stored permanently When setting, -1 must be enclosed by quotes.
+
 ```
-wcscmd deletePrefix wcs://BUCKET test-prefix
+wcscmd setdeadline wcs://BCUKET/OBJECT 3
+wcscmd setdeadline wcs://BCUKET/OBJECT '"-1"'
 ```
 
-#### wcscmd[移动文件](https://wcs.chinanetcenter.com/document/API/ResourceManage/move)
-```wcscmd mv wcs://SRCBUCKET/SRCOBJECT wcs://DSTBUCKET/DSTOBJECT```
+#### wcscmd Delete Object
 
-#### wcscmd[复制文件](https://wcs.chinanetcenter.com/document/API/ResourceManage/copy)
-```wcscmd cp wcs://SRCBUCKET/SRCOBJECT wcs://DSTBUCKET/DSTOBJECT```
+```
+wcscmd del wcs://BCUKET/OBJECT
+```
 
+#### wcscmd Delete Object by Prefix
 
-## 计算文件etag值
-wcs-python-sdk提供了计算文件etag值的工具，用户通过命令行的形式体验这个功能
+```
+wcscmd deletePrefix wcs://BCUKET test-prefix
+```
+
+#### wcscmd Move Object
+
+```
+wcscmd mv wcs://SRCBUCKET/SRCOBJECT wcs://DSTBUCKET/DSTOBJECT
+```
+
+#### wcscmd Copy Object
+
+```
+wcscmd cp wcs://SRCBUCKET/SRCOBJECT wcs://DSTBUCKET/DSTOBJECT
+```
+
+## Generate Etag
+
+wcs-python-sdk provides the tool to generate etag value, users can experience this function through command line.
+
 ```
 /usr/bin/wcs_etag_cal -h
 usage: WCS-Python-SDK [-h] {etag} ...
-
 positional arguments:
-  {etag}
-    etag      etag [file...]
 
+{etag}
+
+etag      etag [file…]
 optional arguments:
- -h, --help  show this help message and exit
 
+-h, --help  show this help message and exit
 /usr/bin/wcs_etag_cal etag filepath1 filepath2
+
 [filepath1, filepath2]
+
 FrA377uGHSxcTM62-rjsjvoKqRVS FiUsqBkZ6e8KaAA9Uu6q3qLPgmDW
 ```
 
-常见问题
 
-1.在相应模块已经安装的情况下，使用工具时出现下面错误：
-`pkg_resources.DistributionNotFound: [modulename]`
-2.解决方案：
-`pip install --upgrade setuptools`
 
-## Python SDK使用
-配置信息初始化
+Common Questions
+
+1、The error will occur when using this tool: `pkg_resources.DistributionNotFound: [modulename]`
+
+2、Solution for this error: `pip install --upgrade setuptools`
+
+## Python SDK
+
+Initialization
+
 ```
 import os
 from os.path import expanduser
 from wcs.commons.config import Config
 from wcs.services.client import Client
+config_file = os.path.join(expanduser("~"), “.wcscfg”)
 
-config_file = os.path.join(expanduser("~"), ".wcscfg")
 cfg = Config(config_file) #加载配置文件
-cli = Client(cfg) 初始化Client  #注：如果要使用多线程同时上传不同文件，请每个线程独立创建client使用，否则不同文件的分片上传信息会重叠
+
+cli = Client(cfg) 初始化Client
 ```
 
-#### [普通上传](https://wcs.chinanetcenter.com/document/API/FileUpload/Upload)
-上传策略通过编辑.wcscfg文件中响应的配置项进行定义
+
+
+#### Normal Upload
+
+The upload policy can be defined by editing .wcscfg
+
 ```
 key = ''
 bucket = ''
@@ -214,32 +262,25 @@ filepath = ''
 cli.simple_upload(filepath, bucket, key)
 ```
 
-#### [分片上传](https://wcs.chinanetcenter.com/document/API/FileUpload/SliceUpload)
-上传策略通过编辑.wcscfg文件中响应的配置项进行定义，如需使用断点续传时才需要提供upload id，在上传时传入，这个upload id优先级高于在.wcscfg中配置的upload id
+#### Multipart Upload
+
+1、The upload policy can be defined by editing .wcscfg, as well as have temporary configurations by the option in command line.
+2、If breakpoint resume function is required, you need to add an option --upload-id, in this case, the priority of this upload-id is higher than upload-id in .wcscfg.
+
 ```
 key = ''
 bucket = ''
 filepath = ''
 upload_id = ''
-cli.multipart_upload(filepath, bucket, key)  // 不启用断点续传
-cli.multipart_upload(filepath, bucket, key，upload_id)  // 启用断点续传
+cli.multipart_upload(filepath, bucket, key，upload_id)
 ```
-另外，当前上传记录的格式是在tmp\_record\_folder目录下，生成已当前上传任务的upload id命名的目录，然后在目录tmp\_record\_folder/upload id下生成多个文件，每个文件以块offset命名，并记录了这个块的上传结果
 
-#### [高级上传](https://wcs.chinanetcenter.com/document/API/FileUpload/SliceUpload)
-1. 该接口用于自动选择是原子上传还是分片上传，默认的multi_size 为20M （入参单位为M），小于等于20M 使用原子上传，大于20M使用分片上传
-2. 断点续传需要提供upload id，在上传时传入，这个upload id优先级高于在.wcscfg中配置的upload id
-```
-key = ''
-bucket = ''
-filepath = ''
-upload_id = ''
-cli.smart_upload(filepath, bucket, key, upload_id, multi_size=20)
-```
-另外，当前上传记录的格式是在tmp\_record\_folder目录下，生成已当前上传任务的upload id命名的目录，然后在目录tmp\_record\_folder/upload id下生成多个文件，每个文件以块offset命名，并记录了这个块的上传结果
+Besides, current upload record is in tmp_record_folder directory, it will generate directories named with upload id. And it will generate multiple objects in directory tmp_record_folder/upload id. Each object will be named with its offset, and it will record the upload result.
 
-#### 流地址上传
-上传策略通过编辑.wcscfg文件中相应的配置项进行定义，上传时需要提供流地址
+#### Upload by Stream Address
+
+The upload policy can be defined by editing .wcscfg, and the stream address must be provided.
+
 ```
 key = ''
 bucket = ''
@@ -247,41 +288,48 @@ stream = ''
 cli.stream_upload(stream, bucket, key)
 ```
 
-#### [列举空间列表](https://wcs.chinanetcenter.com/document/API/ResourceManage/listbucket)
+#### List Bucket
+
 ```
 cli.list_buckets()
-说明：prefix 参数传入不需要base64安全编码
+Notes: No need to do BASE64 encoding in the para prefix input. 
 ```
 
-#### [列举空间对象列表](https://wcs.chinanetcenter.com/document/API/ResourceManage/list)
-接口相关的4个可选参数（limit，mode，prefix，marker）可以在调用时传入，也可以通过.wcscfg文件中相应的配置项进行定义
+#### List Object
+
+There are four optional parameters (limit, mode, prefix, marker) can be input, and you can also define the related configuration item in .wcscfg.
+
 ```
 cli.bucket_list(bucket,limit=10)
 ```
 
-#### [获取空间存储量](https://wcs.chinanetcenter.com/document/API/ResourceManage/bucketstat)
+#### Get the Storage Volume
+
 ```
-startdate = '2017-11-10'
-enddate = '2017-11-12'
+startdate = 'yyyy-mm-dd'
+enddate = 'yyyy-mm-dd'
 bucket = ''
 cli.bucket_stat(bucket, startdate, enddate)
 ```
 
-#### [获取文件信息](https://wcs.chinanetcenter.com/document/API/ResourceManage/stat)
+#### Get the Object Info
+
 ```
 key = ''
 bucket = ''
 cli.stat(bucket, key)
 ```
 
-#### [文件删除](https://wcs.chinanetcenter.com/document/API/ResourceManage/delete)（同步）
+#### Delete Object (synchronous)
+
 ```
 key = ''
 bucket = ''
 cli.delete(bucket, key)
 ```
 
-#### [文件移动](https://wcs.chinanetcenter.com/document/API/ResourceManage/move)（同步）
+#### Move Object (synchronous)
+
 ```
 srcbucket = ''
 srckey = ''
@@ -290,7 +338,8 @@ dstkey = ''
 cli.move(srcbucket, srckey, dstbucket, dstkey)
 ```
 
-#### [文件复制](https://wcs.chinanetcenter.com/document/API/ResourceManage/copy)（同步）
+#### Copy Object (synchronous)
+
 ```
 srcbucket = ''
 srckey = ''
@@ -299,7 +348,8 @@ dstkey = ''
 cli.copy(srcbucket, srckey, dstbucket, dstkey)
 ```
 
-#### [设置文件过期时间](https://wcs.chinanetcenter.com/document/API/ResourceManage/setdeadline)
+#### Set the Expiration of Object
+
 ```
 bucket = ''
 key = ''
@@ -307,7 +357,8 @@ deadline = 3
 cli.setdeadline(bucket, key, deadline)
 ```
 
-#### [文件移动](https://wcs.chinanetcenter.com/document/API/Fmgr/move)（异步）
+#### Move Object (asynchronous)
+
 ```
 srcbucket = 'srcbucket'
 srckey = '1.doc'
@@ -318,7 +369,8 @@ fops = 'resource/%s/bucket/%s/key/%s' % (resource,urlsafe_base64_encode(dstbucke
 cli.fmgr_move(fops)
 ```
 
-#### [文件复制](https://wcs.chinanetcenter.com/document/API/Fmgr/copy)（异步）
+#### Copy Object (asynchronous)
+
 ```
 srcbucket = 'srcbucket'
 srckey = '1.doc'
@@ -329,7 +381,8 @@ fops = 'resource/%s/bucket/%s/key/%s' % (resource,urlsafe_base64_encode(dstbucke
 cli.fmgr_copy(fops)
 ```
 
-#### [文件抓取](https://wcs.chinanetcenter.com/document/API/Fmgr/fetch)
+#### Fetch Object
+
 ```
 url = 'http://a20170704-weihb.w.wcsapi.biz.matocloud.com/1.doc'
 key = '1.doc'
@@ -341,7 +394,8 @@ fops = 'fetchURL/%s/bucket/%s/key/%s' % (fetchurl, enbucket, enkey)
 cli.fmgr_fetch(fops)
 ```
 
-#### 文件删除（异步）
+#### Delete Object (asynchronous)
+
 ```
 key = '1.doc'
 bucket = 'test'
@@ -351,7 +405,8 @@ fops = 'bucket/%s/key/%s' % (enbucket, enkey)
 cli.fmgr_delete(fops)
 ```
 
-#### [按前缀删除文件](https://wcs.chinanetcenter.com/document/API/Fmgr/deletePrefix)
+#### Delete Object by Prefix
+
 ```
 prefix = 'test'
 bucket = 'bucket'
@@ -361,7 +416,8 @@ fops = 'bucket/%s/prefix/%s' % (enbucket, enprefix)
 cli.prefix_delete(fops)
 ```
 
-#### [删除M3U8文件](https://wcs.chinanetcenter.com/document/API/Fmgr/deletem3u8)
+#### Delete M3U8
+
 ```
 bucket = ''
 key = ''
@@ -371,13 +427,15 @@ fops = 'bucket/%s/key/%s' % (enbucket, enkey)
 cli.m3u8_delete(fops)
 ```
 
-#### 高级资源管理任务查询
+#### Inquire for Advanced Resource Management
+
 ```
 persistentId = ''
 cli.fmgr_status(persistentId)
 ```
 
-#### [音视频处理](https://wcs.chinanetcenter.com/document/API/Video-op)
+#### Audio/Video Processing
+
 ```
 bucket = 'test'
 key = 'test.mp4'
@@ -385,54 +443,13 @@ fops = 'vframe/jpg/offset/1'
 cli.ops_execute(fops,bucket,key)
 ```
 
-#### 直播录制文件查询
-请求参数说明如下：
+#### Query for Recording Files of Live
 
-|参数       | 必填	| 描述 |
-|--------   | -----:   | :----: |
-|channelname        | 是      |   直播流名    |
-|startTime        | 是      |   指定直播开始时间，格式为YYYYMMDDmmhhss    |
-|endTime	        | 是      |   指定直播结束时间，格式为YYYYMMDDmmhhss    |
-|bucket             | 是      |指定空间 |
-|start              | 否      |指定起始位置，查询结果从该位置开始返回，如0、1、100 默认值为1，即从查询范围内的第一条记录开始返回|
-|limit              |否       |指定查询个数。不指定则查询所有记录|
+Table 1 Request parameters:
 
-```
-示例：cli.wslive_list(channelname,startTime,startTime, bucket,start,limit)
-```
-
-####计算文件crc64的三种方式#####
-##方式1：
-wcscmd[计算文件的crc64值]
-```wcscmd crc64 ./test-1k```
-
-##方式2：
-计算整个文件的crc64值，入参为[file,is_path=True],传入为文件流时候，需配置参数is_path=False
-```
-from wcs.commons.util import file_crc64
-filepath = 'xxxx'#文件路径
-crc64Value = file_crc64(filepath)
-
-from wcs.commons.util import file_crc64
-fileStream = 'xxxx' #文件流
-crc64Value = file_crc64(fileStream,is_path=False)
-
-####计算文件文件流的crc64值，入参为文件流，文件流过大时候，不建议用该方式。建议使用file_crc64，入参为isPath=False的方式
-from wcs.commons.util import crc64
-crc64Value = crc64(stream)
-```
-
-##方式3：
-wcs-python-sdk提供了计算文件crc64值的工具，用户通过命令行的形式体验这个功能
-```
-usage: WCS Python SDK [-h] {crc64} ...
-positional arguments:
-    {crc64}
-    crc64     crc64 [file...]
-optional arguments:
-    -h, --help  show this help message and exit
-
-/usr/bin/wcs_crc64_cal crc64 filepath1 filepath2
-[filepath1, filepath2]
-1798452899179748974 5299837023984967047
-```
+| Parameter   | Required | Description                                                  |
+| ----------- | -------- | ------------------------------------------------------------ |
+| channelname | yes      | Streaming name of Live                                       |
+| startTime   | yes      | Specify the start time of Live, the fromat is YYYYMMDDmmhhss |
+| endTime     | yes      | Specify the end time of Live, the fromat is YYYYMMDDmmhhss   |
+| bucket      | yes      | Specify Bucket                                               |
