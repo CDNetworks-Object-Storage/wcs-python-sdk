@@ -40,19 +40,17 @@ Python2：pip install -U wcs-python-sdk
 
 ## Initialize
 
-Before using the SDK, you need to obtain ***AccessKey*** and ***SecretKey*** for signature authorization.
-
-And then, you have to get these info: 
+Before using the SDK, you have to:  
 
 1. account: Apply for CDNetworks cloud storage service, get the account. 
 
-2. AK/SK: Log in to CDNetworks SI portal, and you can get the ***AccessKey*** and ***SecretKey*** in Security Console - AK/SK Management 
+2. AK/SK: Get the ***AccessKey*** and ***SecretKey*** through Console - Security Settings - API Information Management - AccessKey Management 
 
-3. puturl&mgrurl: Log in to SI portal and view the Upload Domain (puturl) and Manage Domain (mgrurl) in Bucket Overview -> Bucket Settings
+3. Upload Domain&Manage Domain: Get Upload Domain (puturl) and Manage Domain (mgrurl) in Bucket Overview -> Domain Names
 
-After obtaining the above info, executing ```wcscmd --configure``` to initialize.
+After obtaining the above info, use ```wcscmd --configure``` to initialize and update the config file.
 
-The updated config will be saved in ***.wcscfg*** file under***$HOME*** directory. And you can print the config added after initialization by command ```wcscmd --dump-config```
+The updated config file will be saved to ***.wcscfg*** file under***$HOME*** directory. And you can print the configurations using command ```wcscmd --dump-config```
 
 The configuration parameters in ***.wcscfg*** file are:
 
@@ -61,9 +59,9 @@ access_key  # Access key of user
 block_size  # Block size in multipart upload, default is 4194304，unit is B
 bput_retries  #For multipart upload, the request retries of bput
 bput_size  # Chunk size in multipart upload, default is 524288, unit is B
-callbackBody  # when upload finished, the data to callbackurl
-callbackUrl  # when upload finished, POST request to this address
-concurrency  # Block concurrency, upload in order if this value is 0
+callbackBody  # Content sent to callbackurl after uploading successfully
+callbackUrl  # Callback url
+concurrency  # Block concurrency. Will upload in order if this value is 0
 connection_retries  # number of retries when request connection
 connection_timeout  # Timeout when request connection
 contentDetect  #After uploading, detect content
@@ -73,23 +71,25 @@ force  # If force to execute, default is 0 – not force
 ishttps  # If request in https
 limit  # this para is for List API, define the items listed
 marker # For List API, mark the point in last list as the start point
+mgr_url  # Manage Domain
 mkblk_retries  # for multipart upload, retries number of mkblk
 mkfile_retries   # for multipart upload, retries number of mkfile
 mode   # For List API, define the sorting method of list
 notifyurl  # URL for receiving result in asynchronous processing
-output  #Save descriptor of task as specify file, format：<bucket>:<key>
+output  #Save the description of the task processing result to specified file in the format: <bucket>:<key>
 overwrite   # When upload, if overwrite if filename is existing
 persistentNotifyUrl   # Address to receive pre-processing result
 persistentOps  # After uploading, the pre-processing command
 prefix  # The para prefix when list resource
-put_url   # the upload domain of users
+put_url   # Upload domain
 returnBody  #The data return to upload end when uploading is done
 returnUrl #Storage will POST request to this address when uploading is done
-secret_key  # secret key of user
-separate  # If separately notify the processing commands?
+secret_key  # Access key secret
+separate  # If separately notify the processing commands
 tmp_record_folder  # upload progress record directory for multipart upload
 upload_id   # task id of breakpoint resume in multipart upload
 ```
+***Note: To make wcscmd work, you must modify ak, sk, mgr_url and put_url.***
 
 ## How to use as a Command Line Tool
 
